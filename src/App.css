@@ -1,0 +1,18 @@
+.todo {
+    display: block;
+    color: white;
+    font-size: 30px;
+    padding: 0.5em 1em;
+    width: 20em;
+    margin: 5px;
+    border-left: 30px solid #564848;
+
+    background: linear-gradient(to bottom, gray 50%, rgb(94, 147, 37) 50%) top;
+    background-size: 200% 200%;
+    transition: 5s ease-out;
+}
+
+.todo.todo-completed {
+    /* border-left-color: rgb(73, 126, 37); */
+    background-position: bottom;
+}
