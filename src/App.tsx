@@ -6,11 +6,11 @@ type Todo = {
   content: string;
 }
 
-const TodoComponent: Component<{todo:Todo, changeStatus: (new_status: "active" | "completed") => void}> = (props) => {
+const TodoComponent: Component<{todo:Todo, changeStatus: (new_status: "active" | "completed") => void, delete: () => void}> = (props) => {
   return (
-  <div class={"todo"} classList={{"todo-completed": props.todo.status == "completed"}}
-    onclick={() => props.changeStatus(props.todo.status == "active" ? "completed" : "active")}>
-      {props.todo.content}
+  <div class={"todo"} classList={{"todo-completed": props.todo.status == "completed"}}>
+      <div class="todo-delete" title="DELETE" onClick={e => props.delete()}></div>
+      <div class="todo-content" onclick={() => props.changeStatus(props.todo.status == "active" ? "completed" : "active")}>{props.todo.content}</div>
   </div>);
 };
 
@@ -45,7 +45,8 @@ const App: Component = () => {
     </form>
     <Index each={todos()}>
       {(todo: Accessor<Todo>, i: number) =>
-        <TodoComponent todo={todo()} changeStatus={(status) => changeStatus(i, status)}/>}
+        <TodoComponent todo={todo()} changeStatus={(status) => changeStatus(i, status)}
+          delete={() => setTodos(todos().filter((_, j) => j!=i))}/>}
     </Index>
   </div>
   );
