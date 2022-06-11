@@ -7,12 +7,14 @@
     margin: 5px;
     border-left: 30px solid #564848;
 
-    background: linear-gradient(to bottom, gray 50%, rgb(94, 147, 37) 50%) top;
+    background: linear-gradient(to bottom, gray 50%, rgb(94, 147, 37) 50%) bottom;
     background-size: 200% 200%;
-    transition: 5s ease-out;
+    transition: 0.1s ease-out;
 }
 
 .todo.todo-completed {
     /* border-left-color: rgb(73, 126, 37); */
-    background-position: bottom;
+    background-position: top;
+    text-decoration: line-through;
+    opacity: 0.8;
 }

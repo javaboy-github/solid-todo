@@ -1,4 +1,4 @@
-import { Component, createSignal } from 'solid-js';
+import { Accessor, Component, createEffect, createSignal, For, Index } from 'solid-js';
 import "./App.css";
 
 type Todo = {
@@ -7,11 +7,19 @@ type Todo = {
 }
 
 const TodoComponent: Component<{todo:Todo, changeStatus: (new_status: "active" | "completed") => void}> = (props) => {
-  return (<div class={"todo"} classList={{"todo-completed": props.todo.status == "completed"}} onclick={() => props.changeStatus(props.todo.status == "active" ? "completed" : "active")}>{props.todo.content}</div>);
+  return (
+  <div class={"todo"} classList={{"todo-completed": props.todo.status == "completed"}}
+    onclick={() => props.changeStatus(props.todo.status == "active" ? "completed" : "active")}>
+      {props.todo.content}
+  </div>);
 };
 
 const App: Component = () => {
-  const [todos, setTodos] = createSignal<Todo[]>([]);
+  // get todos from localstorage
+  const todosFromLocalstorage = localStorage.getItem("todos") == undefined ? null : localStorage.getItem("todos");
+  const todosFromLocalstorageArray = todosFromLocalstorage && JSON.parse(todosFromLocalstorage);
+  
+  const [todos, setTodos] = createSignal<Todo[]>(todosFromLocalstorageArray || []);
   const [input, setInput] = createSignal("");
 
   const addTodo = (e: SubmitEvent) => {
@@ -24,6 +32,10 @@ const App: Component = () => {
     setTodos(todos().map((e, i) => i == id ? {...e, status: status} : e));
   };
 
+  createEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos()));
+  });
+
   return (
   <div>
     <h1>TODO List</h1>
@@ -31,7 +43,10 @@ const App: Component = () => {
       <input required placeholder='ex) do my homework' value={input()} onInput={e => {setInput(e.currentTarget.value)}}/>
       <button>Add</button>
     </form>
-    {todos().map((todo, i) => <TodoComponent todo={todo} changeStatus={(status) => changeStatus(i, status)}/>)}
+    <Index each={todos()}>
+      {(todo: Accessor<Todo>, i: number) =>
+        <TodoComponent todo={todo()} changeStatus={(status) => changeStatus(i, status)}/>}
+    </Index>
   </div>
   );
 };
